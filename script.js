@@ -28,6 +28,9 @@ let pipeY = 0;
 let topPipeImg;
 let bottomPipeImg;
 
+//physics
+let velocityX = -2; // tuyaux se déplaçant à gauche vitesse
+
 window.onload = function () {
   board = document.getElementById("board");
   board.height = boardHeight;
@@ -65,6 +68,7 @@ function update() {
   //pipes
   for (let i = 0; i < pipeArray.length; i++) {
     let pipe = pipeArray[1];
+    pipe.x += velocityX;
     context.drawImage(pipe.img, pipe.x, pipe.y, pipe.width, pipe.height);
   }
 }
