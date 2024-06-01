@@ -33,8 +33,9 @@ let velocityX = -2; // tuyaux se déplaçant à gauche vitesse
 let velocityY = 0; // vitesse de saut oiseau
 let gravity = 0.2;
 
-// Game 
+// Game
 let gameOver = false;
+let score = 0;
 
 window.onload = function () {
   board = document.getElementById("board");
@@ -87,10 +88,25 @@ function update() {
     pipe.x += velocityX;
     context.drawImage(pipe.img, pipe.x, pipe.y, pipe.width, pipe.height);
 
+    if (!pipe.passed && bird.x > pipe.x + pipe.width) {
+      score += 0.5; // 0.5 car si 1 le score est de 2 par 2
+      pipe.passed = true;
+    }
+
     if (detectCollision(bird, pipe)) {
       gameOver = true;
     }
   }
+
+  // clear pipes
+  while (pipeArray.length > 0 && pipeArray[0].x < -pipeWidth) {
+    pipeArray.shift(); // Sup les tuyaux passer
+  }
+
+  //score
+  context.fillStyle = "white";
+  context.font = "45px sans-serif";
+  context.fillText(score, 5, 45);
 }
 
 function placePipes() {
