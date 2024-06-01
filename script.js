@@ -67,17 +67,22 @@ function update() {
 
   //pipes
   for (let i = 0; i < pipeArray.length; i++) {
-    let pipe = pipeArray[i]; // Correction : utiliser l'indice "i" au lieu de "1"
+    let pipe = pipeArray[i]; 
     pipe.x += velocityX;
     context.drawImage(pipe.img, pipe.x, pipe.y, pipe.width, pipe.height);
   }
 }
 
 function placePipes() {
+  //(0-1) * pipeHeight/2
+  //0 -> -128 (pipeHeight/4)
+  // 1 -> -128 - 256 (pipeHeight/4 - pipeHeight/2) = -3/4 pipeHeight
+  let randomPipeY = pipeY - pipeHeight / 4 - Math.random() * (pipeHeight / 2);
+
   let topPipe = {
     img: topPipeImg,
     x: pipeX,
-    y: pipeY,
+    y: randomPipeY,
     width: pipeWidth,
     height: pipeHeight,
     passed: false,
