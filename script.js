@@ -4,7 +4,7 @@ let boardWidth = 360;
 let boardHeight = 640;
 let context;
 
-// oiseau
+// bird
 let birdWidth = 34; // width/height ratio = 408/228 = 17/12
 let birdHeight = 24;
 let birdX = boardWidth / 8;
@@ -18,7 +18,7 @@ let bird = {
   height: birdHeight,
 };
 
-// tuyaux
+// pipe
 let pipeArray = [];
 let pipeWidth = 64; // width/height ratio = 384/3072 = 1/8
 let pipeHeight = 512;
@@ -65,12 +65,13 @@ function update() {
   requestAnimationFrame(update);
   context.clearRect(0, 0, board.width, board.height);
 
-  // Dessiner l'oiseau
+  // bird
   velocityY += gravity;
-  bird.y += velocityY;
+  // bird.y += velocityY;
+  bird.y = Math.max(bird.y + velocityY, 0); // appliquer la gravité à bird.y actuel, limiter bird.y au sommet de la toile.
   context.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
 
-  // Dessiner les tuyaux
+  // pipe
   for (let i = 0; i < pipeArray.length; i++) {
     let pipe = pipeArray[i];
     pipe.x += velocityX;
