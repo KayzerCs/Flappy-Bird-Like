@@ -55,7 +55,7 @@ window.onload = function () {
   bottomPipeImg.src = "./asset/bottompipe.png";
 
   requestAnimationFrame(update);
-  setInterval(placePipes, 1100); // A peu près 1.1 secondes
+  setInterval(placePipes, 1100); // A peu près 1.1   secondes
 };
 
 function update() {
@@ -80,6 +80,7 @@ function placePipes() {
 
   // Position aléatoire pour le tuyau supérieur
   let randomPipeY = pipeY - pipeHeight / 4 - Math.random() * (pipeHeight / 2);
+  let openningSpace = board.height / 4;
 
   // Tuyau supérieur
   let topPipe = {
@@ -90,6 +91,16 @@ function placePipes() {
     height: pipeHeight,
     passed: false,
   };
-
   pipeArray.push(topPipe);
+
+  // Tuyau inférieur
+  let bottomPipe = {
+    img: bottomPipeImg,
+    x: pipeX,
+    y: randomPipeY + pipeHeight + openningSpace,
+    width: pipeWidth,
+    height: pipeHeight,
+    passed: false,
+  };
+  pipeArray.push(bottomPipe);
 }
