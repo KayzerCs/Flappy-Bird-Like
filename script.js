@@ -68,28 +68,27 @@ function update() {
   context.clearRect(0, 0, board.width, board.height);
 
   if (gameOver) {
-    context.font = "50px sans-serif"; // Augmenter la taille de la police pour "GAME OVER"
+    context.font = "55px sans-serif"; // Augmenter la taille de la police pour "GAME OVER"
     let gameOverText = "GAME OVER";
     let gameOverWidth = context.measureText(gameOverText).width;
-    context.fillText(
-      gameOverText,
-      (boardWidth - gameOverWidth) / 2,
-      boardHeight / 2
-    ); // Centrer le texte "GAME OVER"
+    context.fillText(gameOverText, (boardWidth - gameOverWidth) / 2, boardHeight / 2); // Centrer le texte "GAME OVER"
+
+    // Afficher le score final
+    context.font = "45px sans-serif"; // Taille de la police pour le score final
+    let finalScoreText = "Score: " + score.toString();
+    let finalScoreWidth = context.measureText(finalScoreText).width;
+    context.fillText(finalScoreText, (boardWidth - finalScoreWidth) / 2, (boardHeight / 2) + 60); // Afficher le score sous "GAME OVER"
+
     return;
   }
 
   // Afficher le texte initial
   if (startText) {
     context.fillStyle = "white";
-    context.font = "45px sans-serif";
+    context.font = "30px sans-serif";
     let message = 'press "space"';
     let messageWidth = context.measureText(message).width;
-    context.fillText(
-      message,
-      (boardWidth - messageWidth) / 2,
-      boardHeight / 2 + 100
-    ); // Abaisser le texte de 50px
+    context.fillText(message, (boardWidth - messageWidth) / 2, boardHeight / 2 + 100); // Abaisser le texte de 50px
   }
 
   // Dessiner l'oiseau
@@ -133,6 +132,7 @@ function update() {
   let textWidth = context.measureText(scoreText).width;
   context.fillText(scoreText, (boardWidth - textWidth) / 2, 95); // Centrer le score et descendre de 50px
 }
+
 
 function placePipes() {
   if (gameOver) {
