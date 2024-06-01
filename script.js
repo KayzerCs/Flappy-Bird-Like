@@ -36,16 +36,13 @@ let gravity = 0.2;
 // Game
 let gameOver = false;
 let score = 0;
+let gameStarted = false; // Variable pour vérifier si le jeu a commencé
 
 window.onload = function () {
   board = document.getElementById("board");
   board.height = boardHeight;
   board.width = boardWidth;
   context = board.getContext("2d"); // utilisé pour dessiner au tableau
-
-  // dessiner flappy bird
-  //   context.fillStyle = "green";
-  //   context.fillRect(bird.x, bird.y, bird.width, bird.height);
 
   // charger l'image de l'oiseau
   birdImg = new Image();
@@ -60,57 +57,57 @@ window.onload = function () {
   bottomPipeImg = new Image();
   bottomPipeImg.src = "./asset/bottompipe.png";
 
-  requestAnimationFrame(update);
-  setInterval(placePipes, 1100); // A peu près 1.1 secondes
+  requestAnimationFrame(update); // Commence la boucle de mise à jour
   document.addEventListener("keydown", moveBird);
 };
 
 function update() {
   requestAnimationFrame(update);
-  if (gameOver) {
-    return;
-  }
   context.clearRect(0, 0, board.width, board.height);
 
-  // bird
-  velocityY += gravity;
-  // bird.y += velocityY;
-  bird.y = Math.max(bird.y + velocityY, 0); // appliquer la gravité à bird.y actuel, limiter bird.y au sommet de la toile.
+  if (gameOver) {
+    context.fillText("GAME OVER", 5, 90);
+    return;
+  }
+
+  // Dessiner l'oiseau
+  if (gameStarted) {
+    velocityY += gravity;
+    bird.y = Math.max(bird.y + velocityY, 0); // appliquer la gravité à bird.y actuel, limiter bird.y au sommet de la toile.
+  }
   context.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
 
   if (bird.y > board.height) {
     gameOver = true;
   }
 
-  // pipe
-  for (let i = 0; i < pipeArray.length; i++) {
-    let pipe = pipeArray[i];
-    pipe.x += velocityX;
-    context.drawImage(pipe.img, pipe.x, pipe.y, pipe.width, pipe.height);
+  // Dessiner les tuyaux
+  if (gameStarted) {
+    for (let i = 0; i < pipeArray.length; i++) {
+      let pipe = pipeArray[i];
+      pipe.x += velocityX;
+      context.drawImage(pipe.img, pipe.x, pipe.y, pipe.width, pipe.height);
 
-    if (!pipe.passed && bird.x > pipe.x + pipe.width) {
-      score += 0.5; // 0.5 car si 1 le score est de 2 par 2
-      pipe.passed = true;
+      if (!pipe.passed && bird.x > pipe.x + pipe.width) {
+        score += 0.5; // 0.5 car si 1 le score est de 2 par 2
+        pipe.passed = true;
+      }
+
+      if (detectCollision(bird, pipe)) {
+        gameOver = true;
+      }
     }
 
-    if (detectCollision(bird, pipe)) {
-      gameOver = true;
+    // Supprimer les tuyaux sortis de l'écran
+    while (pipeArray.length > 0 && pipeArray[0].x < -pipeWidth) {
+      pipeArray.shift(); // Sup les tuyaux passer
     }
   }
 
-  // clear pipes
-  while (pipeArray.length > 0 && pipeArray[0].x < -pipeWidth) {
-    pipeArray.shift(); // Sup les tuyaux passer
-  }
-
-  //score
+  // Afficher le score
   context.fillStyle = "white";
   context.font = "45px sans-serif";
   context.fillText(score, 5, 45);
-
-  if (gameOver) {
-    context.fillText("GAME OVER", 5, 90);
-  }
 }
 
 function placePipes() {
@@ -151,15 +148,24 @@ function placePipes() {
 
 function moveBird(e) {
   if (e.code == "Space" || e.code == "ArrowUp" || e.code == "KeyX") {
-    //jump
+    // Démarrer le jeu
+    if (!gameStarted) {
+      gameStarted = true;
+      setInterval(placePipes, 1100); // Commence à placer les tuyaux lorsque le jeu démarre
+    }
+
+    // Sauter
     velocityY = -6;
 
-    //reset game
+    // Réinitialiser le jeu
     if (gameOver) {
       bird.y = birdY;
       pipeArray = [];
       score = 0;
-      gameOver = false
+      gameOver = false;
+      gameStarted = false; // Réinitialiser gameStarted
+      velocityY = 0; // Réinitialiser la vitesse de l'oiseau
+      context.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
     }
   }
 }
