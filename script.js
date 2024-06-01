@@ -66,7 +66,7 @@ function update() {
   context.clearRect(0, 0, board.width, board.height);
 
   if (gameOver) {
-    context.fillText("GAME OVER", boardWidth / 2.5 - 100, 90); // Centrer le texte "GAME OVER"
+    context.fillText("GAME OVER", boardWidth / 3.2 - 100, 300); // Centrer le texte "GAME OVER"
     return;
   }
 
@@ -106,10 +106,10 @@ function update() {
 
   // Afficher le score
   context.fillStyle = "white";
-  context.font = "45px sans-serif";
+  context.font = "55px sans-serif";
   let scoreText = score.toString();
   let textWidth = context.measureText(scoreText).width;
-  context.fillText(scoreText, (boardWidth - textWidth) / 2, 45); // Centrer le score en haut de l'écran
+  context.fillText(scoreText, (boardWidth - textWidth) / 2, 95); // Centrer le score en haut de l'écran
 }
 
 
