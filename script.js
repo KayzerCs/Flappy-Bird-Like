@@ -18,7 +18,7 @@ let bird = {
   height: birdHeight,
 };
 
-//pipes
+// pipes
 let pipeArray = [];
 let pipeWidth = 64; // width/height ratio = 384/3072 = 1/8
 let pipeHeight = 512;
@@ -34,14 +34,14 @@ let velocityX = -2; // tuyaux se déplaçant à gauche vitesse
 window.onload = function () {
   board = document.getElementById("board");
   board.height = boardHeight;
-  board.Width = boardWidth;
+  board.width = boardWidth;
   context = board.getContext("2d"); // utilisé pour dessiner au tableau
 
   // dessiner flappy bird
   //   context.fillStyle = "green";
   //   context.fillRect(bird.x, bird.y, bird.width, bird.height);
 
-  // charger l'image
+  // charger l'image de l'oiseau
   birdImg = new Image();
   birdImg.src = "./asset/flappybird.png";
   birdImg.onload = function () {
@@ -55,19 +55,19 @@ window.onload = function () {
   bottomPipeImg.src = "./asset/bottompipe.png";
 
   requestAnimationFrame(update);
-  setInterval(placePipes, 1500); // A peut pret 1.5 secondes
+  setInterval(placePipes, 1500); // A peu près 1.5 secondes
 };
 
 function update() {
   requestAnimationFrame(update);
-  context.clearRect(0, 0, board.width, board, height);
+  context.clearRect(0, 0, board.width, board.height);
 
   //bird
   context.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
 
   //pipes
   for (let i = 0; i < pipeArray.length; i++) {
-    let pipe = pipeArray[1];
+    let pipe = pipeArray[i]; // Correction : utiliser l'indice "i" au lieu de "1"
     pipe.x += velocityX;
     context.drawImage(pipe.img, pipe.x, pipe.y, pipe.width, pipe.height);
   }
