@@ -68,7 +68,14 @@ function update() {
   context.clearRect(0, 0, board.width, board.height);
 
   if (gameOver) {
-    context.fillText("GAME OVER", boardWidth / 2.5 - 100, 140); // Centrer le texte "GAME OVER" et descendre de 50px
+    context.font = "50px sans-serif"; // Augmenter la taille de la police pour "GAME OVER"
+    let gameOverText = "GAME OVER";
+    let gameOverWidth = context.measureText(gameOverText).width;
+    context.fillText(
+      gameOverText,
+      (boardWidth - gameOverWidth) / 2,
+      boardHeight / 2
+    ); // Centrer le texte "GAME OVER"
     return;
   }
 
@@ -121,7 +128,7 @@ function update() {
 
   // Afficher le score
   context.fillStyle = "white";
-  context.font = "45px sans-serif";
+  context.font = "65px sans-serif";
   let scoreText = score.toString();
   let textWidth = context.measureText(scoreText).width;
   context.fillText(scoreText, (boardWidth - textWidth) / 2, 95); // Centrer le score et descendre de 50px
