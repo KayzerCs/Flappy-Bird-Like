@@ -18,6 +18,8 @@ let bird = {
   height: birdHeight,
 };
 
+
+
 window.onload = function () {
   board = document.getElementById("board");
   board.height = boardHeight;
@@ -25,8 +27,8 @@ window.onload = function () {
   context = board.getContext("2d"); // utilisé pour dessiner au tableau
 
   // dessiner flappy bird
-//   context.fillStyle = "green";
-//   context.fillRect(bird.x, bird.y, bird.width, bird.height);
+  //   context.fillStyle = "green";
+  //   context.fillRect(bird.x, bird.y, bird.width, bird.height);
 
   // charger l'image
   birdImg = new Image();
@@ -35,5 +37,13 @@ window.onload = function () {
     context.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
   };
 
+  requestAnimationFrame(update);
 };
 
+function update() {
+  requestAnimationFrame(update);
+  context.clearRect(0, 0, board.width, board, height);
+
+  //bird
+  context.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
+}
