@@ -31,7 +31,7 @@ let bottomPipeImg;
 // physics
 let velocityX = -2; // tuyaux se déplaçant à gauche vitesse
 let velocityY = 0; // vitesse de saut oiseau
-
+let gravity = 0.2;
 
 window.onload = function () {
   board = document.getElementById("board");
@@ -66,6 +66,7 @@ function update() {
   context.clearRect(0, 0, board.width, board.height);
 
   // Dessiner l'oiseau
+  velocityY += gravity;
   bird.y += velocityY;
   context.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
 
