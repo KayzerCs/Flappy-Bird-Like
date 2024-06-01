@@ -30,6 +30,8 @@ let bottomPipeImg;
 
 // physics
 let velocityX = -2; // tuyaux se déplaçant à gauche vitesse
+let velocityY = 0; // vitesse de saut oiseau
+
 
 window.onload = function () {
   board = document.getElementById("board");
@@ -55,7 +57,8 @@ window.onload = function () {
   bottomPipeImg.src = "./asset/bottompipe.png";
 
   requestAnimationFrame(update);
-  setInterval(placePipes, 1100); // A peu près 1.1   secondes
+  setInterval(placePipes, 1100); // A peu près 1.1 secondes
+  document.addEventListener("keydown", moveBird);
 };
 
 function update() {
@@ -63,6 +66,7 @@ function update() {
   context.clearRect(0, 0, board.width, board.height);
 
   // Dessiner l'oiseau
+  bird.y += velocityY;
   context.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
 
   // Dessiner les tuyaux
@@ -103,4 +107,11 @@ function placePipes() {
     passed: false,
   };
   pipeArray.push(bottomPipe);
+}
+
+function moveBird(e) {
+  if (e.code == "Space" || e.code == "ArrowUp" || e.code == "KeyX") {
+    //jump
+    velocityY = -6;
+  }
 }
