@@ -27,6 +27,7 @@ let pipeY = 0;
 
 let topPipeImg;
 let bottomPipeImg;
+let pipeInterval; // Variable pour stocker l'identifiant de l'intervalle des tuyaux
 
 // physics
 let velocityX = -2; // tuyaux se déplaçant à gauche vitesse
@@ -37,6 +38,7 @@ let gravity = 0.2;
 let gameOver = false;
 let score = 0;
 let gameStarted = false; // Variable pour vérifier si le jeu a commencé
+let startText = true; // Variable pour afficher le texte initial
 
 window.onload = function () {
   board = document.getElementById("board");
@@ -66,8 +68,21 @@ function update() {
   context.clearRect(0, 0, board.width, board.height);
 
   if (gameOver) {
-    context.fillText("GAME OVER", boardWidth / 3.2 - 100, 300); // Centrer le texte "GAME OVER"
+    context.fillText("GAME OVER", boardWidth / 2.5 - 100, 140); // Centrer le texte "GAME OVER" et descendre de 50px
     return;
+  }
+
+  // Afficher le texte initial
+  if (startText) {
+    context.fillStyle = "white";
+    context.font = "45px sans-serif";
+    let message = 'press "space"';
+    let messageWidth = context.measureText(message).width;
+    context.fillText(
+      message,
+      (boardWidth - messageWidth) / 2,
+      boardHeight / 2 + 100
+    ); // Abaisser le texte de 50px
   }
 
   // Dessiner l'oiseau
@@ -106,12 +121,11 @@ function update() {
 
   // Afficher le score
   context.fillStyle = "white";
-  context.font = "55px sans-serif";
+  context.font = "45px sans-serif";
   let scoreText = score.toString();
   let textWidth = context.measureText(scoreText).width;
-  context.fillText(scoreText, (boardWidth - textWidth) / 2, 95); // Centrer le score en haut de l'écran
+  context.fillText(scoreText, (boardWidth - textWidth) / 2, 95); // Centrer le score et descendre de 50px
 }
-
 
 function placePipes() {
   if (gameOver) {
@@ -154,7 +168,8 @@ function moveBird(e) {
     // Démarrer le jeu
     if (!gameStarted) {
       gameStarted = true;
-      setInterval(placePipes, 1100); // Commence à placer les tuyaux lorsque le jeu démarre
+      startText = false; // Arrêter d'afficher le texte initial
+      pipeInterval = setInterval(placePipes, 1100); // Commence à placer les tuyaux lorsque le jeu démarre
     }
 
     // Sauter
@@ -162,11 +177,13 @@ function moveBird(e) {
 
     // Réinitialiser le jeu
     if (gameOver) {
+      clearInterval(pipeInterval); // Supprime l'intervalle précédent
       bird.y = birdY;
       pipeArray = [];
       score = 0;
       gameOver = false;
       gameStarted = false; // Réinitialiser gameStarted
+      startText = true; // Afficher le texte initial
       velocityY = 0; // Réinitialiser la vitesse de l'oiseau
       context.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
     }
