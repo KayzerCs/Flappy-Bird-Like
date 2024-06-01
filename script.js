@@ -18,7 +18,15 @@ let bird = {
   height: birdHeight,
 };
 
+//pipes
+let pipeArray = [];
+let pipeWidth = 64; // width/height ratio = 384/3072 = 1/8
+let pipeHeight = 512;
+let pipeX = boardWidth;
+let pipeY = 0;
 
+let topPipeImg;
+let bottomPipeImg;
 
 window.onload = function () {
   board = document.getElementById("board");
@@ -37,7 +45,14 @@ window.onload = function () {
     context.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
   };
 
+  topPipeImg = new Image();
+  topPipeImg.src = "./asset/toppipe.png";
+
+  bottomPipeImg = new Image();
+  bottomPipeImg.src = "./asset/bottompipe.png";
+
   requestAnimationFrame(update);
+  setInterval(placePipes, 1500); // A peut pret 1.5 secondes
 };
 
 function update() {
