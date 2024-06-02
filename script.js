@@ -30,9 +30,9 @@ let bottomPipeImg;
 let pipeInterval; // Variable pour stocker l'identifiant de l'intervalle des tuyaux
 
 // physics
-let velocityX = -2; // tuyaux se déplaçant à gauche vitesse
-let velocityY = 0; // vitesse de saut oiseau
-let gravity = 0.2;
+let velocityX = -1; // tuyaux se déplaçant à gauche vitesse
+let velocityY = -4; // vitesse de saut oiseau
+let gravity = 0.1;
 
 // Game
 let gameOver = false;
@@ -71,13 +71,21 @@ function update() {
     context.font = "55px sans-serif"; // Augmenter la taille de la police pour "GAME OVER"
     let gameOverText = "GAME OVER";
     let gameOverWidth = context.measureText(gameOverText).width;
-    context.fillText(gameOverText, (boardWidth - gameOverWidth) / 2, boardHeight / 2); // Centrer le texte "GAME OVER"
+    context.fillText(
+      gameOverText,
+      (boardWidth - gameOverWidth) / 2,
+      boardHeight / 2
+    ); // Centrer le texte "GAME OVER"
 
     // Afficher le score final
     context.font = "45px sans-serif"; // Taille de la police pour le score final
     let finalScoreText = "Score: " + score.toString();
     let finalScoreWidth = context.measureText(finalScoreText).width;
-    context.fillText(finalScoreText, (boardWidth - finalScoreWidth) / 2, (boardHeight / 2) + 60); // Afficher le score sous "GAME OVER"
+    context.fillText(
+      finalScoreText,
+      (boardWidth - finalScoreWidth) / 2,
+      boardHeight / 2 + 60
+    ); // Afficher le score sous "GAME OVER"
 
     return;
   }
@@ -88,7 +96,11 @@ function update() {
     context.font = "30px sans-serif";
     let message = 'press "space"';
     let messageWidth = context.measureText(message).width;
-    context.fillText(message, (boardWidth - messageWidth) / 2, boardHeight / 2 + 100); // Abaisser le texte de 50px
+    context.fillText(
+      message,
+      (boardWidth - messageWidth) / 2,
+      boardHeight / 2 + 100
+    ); // Abaisser le texte de 50px
   }
 
   // Dessiner l'oiseau
@@ -133,7 +145,6 @@ function update() {
   context.fillText(scoreText, (boardWidth - textWidth) / 2, 95); // Centrer le score et descendre de 50px
 }
 
-
 function placePipes() {
   if (gameOver) {
     return;
@@ -176,11 +187,11 @@ function moveBird(e) {
     if (!gameStarted) {
       gameStarted = true;
       startText = false; // Arrêter d'afficher le texte initial
-      pipeInterval = setInterval(placePipes, 1100); // Commence à placer les tuyaux lorsque le jeu démarre
+      pipeInterval = setInterval(placePipes, 1800); // Commence à placer les tuyaux lorsque le jeu démarre
     }
 
     // Sauter
-    velocityY = -6;
+    velocityY = -4;
 
     // Réinitialiser le jeu
     if (gameOver) {
