@@ -1,3 +1,10 @@
+/* Réinitialiser les styles par défaut */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
   font-family: "Courier New", Courier, monospace;
   text-align: center;
@@ -7,33 +14,46 @@ body {
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  overflow: hidden; /* Empêche les débordements */
 }
 
 h1 {
-  font-family: "Roboto Slab", serif;
+  font-family: "Roboto Slab", "Times New Roman", serif;
   color: #83e38c;
   font-weight: 600;
-  font-size: 35px;
+  font-size: 2.5rem; /* Utilisation de rem pour la réactivité */
   margin-bottom: 30px;
 }
 
 h2 {
-  font-family: "Roboto Slab", serif;
+  font-family: "Roboto Slab", "Times New Roman", serif;
   color: #83e38c;
   font-weight: 600;
-  font-size: 35px;
+  font-size: 2.5rem; /* Utilisation de rem pour la réactivité */
   letter-spacing: 2px;
   margin-top: 30px;
 }
 
 p {
   color: white;
-  font-size: 25px;
+  font-size: 1.5rem; /* Utilisation de rem pour la réactivité */
   margin-top: -10px;
   font-weight: bold;
 }
 
 #board {
-  /* background-color: skyblue; */
-  background-image: url(asset/flappybirdbg.png);
+  background-image: url('asset/flappybirdbg.png');
+  background-color: skyblue; /* Couleur de secours pour le fond */
+  background-size: cover; /* Ajuste l’image de fond pour qu’elle couvre tout l’élément */
+  background-position: center; /* Centre l’image de fond */
+}
+
+/* Styles pour les petites résolutions */
+@media (max-width: 600px) {
+  h1, h2 {
+    font-size: 2rem; /* Taille adaptée pour les petits écrans */
+  }
+  p {
+    font-size: 1.2rem; /* Taille adaptée pour les petits écrans */
+  }
 }

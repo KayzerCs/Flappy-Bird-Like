@@ -1,11 +1,28 @@
-// tableau
+// Polyfills pour requestAnimationFrame et cancelAnimationFrame
+window.requestAnimationFrame =
+  window.requestAnimationFrame ||
+  window.webkitRequestAnimationFrame ||
+  window.mozRequestAnimationFrame ||
+  window.msRequestAnimationFrame ||
+  function (callback) {
+    return setTimeout(callback, 1000 / 60);
+  };
+
+window.cancelAnimationFrame =
+  window.cancelAnimationFrame ||
+  window.webkitCancelAnimationFrame ||
+  window.mozCancelAnimationFrame ||
+  window.msCancelAnimationFrame ||
+  clearTimeout;
+
+// Variables
 let board;
 let boardWidth = 360;
 let boardHeight = 640;
 let context;
 
-// bird
-let birdWidth = 34; // width/height ratio = 408/228 = 17/12
+// Bird
+let birdWidth = 34;
 let birdHeight = 24;
 let birdX = boardWidth / 8;
 let birdY = boardHeight / 2;
@@ -18,79 +35,92 @@ let bird = {
   height: birdHeight,
 };
 
-// pipe
+// Pipe
 let pipeArray = [];
-let pipeWidth = 64; // width/height ratio = 384/3072 = 1/8
+let pipeWidth = 64;
 let pipeHeight = 512;
 let pipeX = boardWidth;
 let pipeY = 0;
 
 let topPipeImg;
 let bottomPipeImg;
-let pipeInterval; // Variable pour stocker l'identifiant de l'intervalle des tuyaux
+let pipeInterval;
 
-// physics
-let velocityX = -1; // tuyaux se déplaçant à gauche vitesse
-let velocityY = -4; // vitesse de saut oiseau
+// Physics
+let velocityX = -1;
+let velocityY = -4;
 let gravity = 0.1;
 
 // Game
 let gameOver = false;
 let score = 0;
-let gameStarted = false; // Variable pour vérifier si le jeu a commencé
-let startText = true; // Variable pour afficher le texte initial
+let gameStarted = false;
+let startText = true;
 
 window.onload = function () {
   board = document.getElementById("board");
-  board.height = boardHeight;
-  board.width = boardWidth;
-  context = board.getContext("2d"); // utilisé pour dessiner au tableau
+  context = board.getContext("2d");
 
-  // charger l'image de l'oiseau
+  loadImages();
+
+  document.addEventListener("keydown", moveBird);
+  document.addEventListener("touchstart", moveBird);
+
+  resizeCanvas();
+  window.addEventListener("resize", resizeCanvas);
+
+  requestAnimationFrame(update);
+};
+
+function loadImages() {
   birdImg = new Image();
   birdImg.src = "./asset/flappybird.png";
   birdImg.onload = function () {
     context.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
   };
+  birdImg.onerror = function () {
+    console.error("Failed to load bird image.");
+  };
 
   topPipeImg = new Image();
   topPipeImg.src = "./asset/toppipe.png";
+  topPipeImg.onerror = function () {
+    console.error("Failed to load top pipe image.");
+  };
 
   bottomPipeImg = new Image();
   bottomPipeImg.src = "./asset/bottompipe.png";
-
-  requestAnimationFrame(update); // Commence la boucle de mise à jour
-  document.addEventListener("keydown", moveBird);
-};
+  bottomPipeImg.onerror = function () {
+    console.error("Failed to load bottom pipe image.");
+  };
+}
 
 function update() {
   requestAnimationFrame(update);
   context.clearRect(0, 0, board.width, board.height);
 
   if (gameOver) {
-    context.font = "55px sans-serif"; // Augmenter la taille de la police pour "GAME OVER"
+    context.font = "55px sans-serif";
     let gameOverText = "GAME OVER";
     let gameOverWidth = context.measureText(gameOverText).width;
     context.fillText(
       gameOverText,
       (boardWidth - gameOverWidth) / 2,
       boardHeight / 2
-    ); // Centrer le texte "GAME OVER"
+    );
 
-    // Afficher le score final
-    context.font = "45px sans-serif"; // Taille de la police pour le score final
+    context.font = "45px sans-serif";
     let finalScoreText = "Score: " + score.toString();
     let finalScoreWidth = context.measureText(finalScoreText).width;
     context.fillText(
       finalScoreText,
       (boardWidth - finalScoreWidth) / 2,
       boardHeight / 2 + 60
-    ); // Afficher le score sous "GAME OVER"
+    );
 
     return;
   }
 
-  // Afficher le texte initial
   if (startText) {
     context.fillStyle = "white";
     context.font = "30px sans-serif";
@@ -100,13 +130,12 @@ function update() {
       message,
       (boardWidth - messageWidth) / 2,
       boardHeight / 2 + 100
-    ); // Abaisser le texte de 50px
+    );
   }
 
-  // Dessiner l'oiseau
   if (gameStarted) {
     velocityY += gravity;
-    bird.y = Math.max(bird.y + velocityY, 0); // appliquer la gravité à bird.y actuel, limiter bird.y au sommet de la toile.
+    bird.y = Math.max(bird.y + velocityY, 0);
   }
   context.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
 
@@ -114,7 +143,6 @@ function update() {
     gameOver = true;
   }
 
-  // Dessiner les tuyaux
   if (gameStarted) {
     for (let i = 0; i < pipeArray.length; i++) {
       let pipe = pipeArray[i];
@@ -122,7 +150,7 @@ function update() {
       context.drawImage(pipe.img, pipe.x, pipe.y, pipe.width, pipe.height);
 
       if (!pipe.passed && bird.x > pipe.x + pipe.width) {
-        score += 0.5; // 0.5 car si 1 le score est de 2 par 2
+        score += 0.5;
         pipe.passed = true;
       }
 
@@ -131,18 +159,16 @@ function update() {
       }
     }
 
-    // Supprimer les tuyaux sortis de l'écran
     while (pipeArray.length > 0 && pipeArray[0].x < -pipeWidth) {
-      pipeArray.shift(); // Sup les tuyaux passer
+      pipeArray.shift();
     }
   }
 
-  // Afficher le score
   context.fillStyle = "white";
   context.font = "65px sans-serif";
   let scoreText = score.toString();
   let textWidth = context.measureText(scoreText).width;
-  context.fillText(scoreText, (boardWidth - textWidth) / 2, 95); // Centrer le score et descendre de 50px
+  context.fillText(scoreText, (boardWidth - textWidth) / 2, 95);
 }
 
 function placePipes() {
@@ -150,15 +176,9 @@ function placePipes() {
     return;
   }
 
-  //(0-1) * pipeHeight/2
-  //0 -> -128 (pipeHeight/4)
-  // 1 -> -128 - 256 (pipeHeight/4 - pipeHeight/2) = -3/4 pipeHeight
-
-  // Position aléatoire pour le tuyau supérieur
   let randomPipeY = pipeY - pipeHeight / 4 - Math.random() * (pipeHeight / 2);
   let openningSpace = board.height / 4;
 
-  // Tuyau supérieur
   let topPipe = {
     img: topPipeImg,
     x: pipeX,
@@ -169,7 +189,6 @@ function placePipes() {
   };
   pipeArray.push(topPipe);
 
-  // Tuyau inférieur
   let bottomPipe = {
     img: bottomPipeImg,
     x: pipeX,
@@ -182,29 +201,35 @@ function placePipes() {
 }
 
 function moveBird(e) {
-  if (e.code == "Space" || e.code == "ArrowUp" || e.code == "KeyX") {
-    // Démarrer le jeu
-    if (!gameStarted) {
-      gameStarted = true;
-      startText = false; // Arrêter d'afficher le texte initial
-      pipeInterval = setInterval(placePipes, 1800); // Commence à placer les tuyaux lorsque le jeu démarre
-    }
+  if (
+    e.type === "keydown" &&
+    (e.code == "Space" || e.code == "ArrowUp" || e.code == "KeyX")
+  ) {
+    handleMove();
+  } else if (e.type === "touchstart") {
+    handleMove();
+  }
+}
 
-    // Sauter
-    velocityY = -4;
+function handleMove() {
+  if (!gameStarted) {
+    gameStarted = true;
+    startText = false;
+    pipeInterval = setInterval(placePipes, 1800);
+  }
 
-    // Réinitialiser le jeu
-    if (gameOver) {
-      clearInterval(pipeInterval); // Supprime l'intervalle précédent
-      bird.y = birdY;
-      pipeArray = [];
-      score = 0;
-      gameOver = false;
-      gameStarted = false; // Réinitialiser gameStarted
-      startText = true; // Afficher le texte initial
-      velocityY = 0; // Réinitialiser la vitesse de l'oiseau
-      context.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
-    }
+  velocityY = -4;
+
+  if (gameOver) {
+    clearInterval(pipeInterval);
+    bird.y = birdY;
+    pipeArray = [];
+    score = 0;
+    gameOver = false;
+    gameStarted = false;
+    startText = true;
+    velocityY = 0;
+    context.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
   }
 }
 
@@ -215,4 +240,13 @@ function detectCollision(a, b) {
     a.y < b.y + b.height &&
     a.y + a.height > b.y
   );
+}
+
+function resizeCanvas() {
+  boardWidth = window.innerWidth < 360 ? window.innerWidth : 360;
+  boardHeight = window.innerHeight < 640 ? window.innerHeight : 640;
+  board.width = boardWidth;
+  board.height = boardHeight;
+  bird.x = boardWidth / 8;
+  bird.y = boardHeight / 2;
 }
